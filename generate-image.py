@@ -2,11 +2,14 @@
 
 import os
 import png
+import subprocess
+
+OUTPUT_DIR = 'Output'
 
 RED = [255, 0, 0]
 BLUE = [0, 0, 255]
 
-def generateImage(directoryName, fileName, colour, width = 255, height = 255):
+def generateImage(filePath, colour, width = 255, height = 255):
     def createImgRow():
         row = []
         for _ in range(width):
@@ -15,30 +18,32 @@ def generateImage(directoryName, fileName, colour, width = 255, height = 255):
 
     img = [createImgRow() for _ in range(height)]
 
-    if not os.path.exists(directoryName):
-        os.makedirs(directoryName)
-    filePath = os.path.join(directoryName, fileName)
-
     with open(filePath, 'wb') as f:
         w = png.Writer(width, height, greyscale=False)
         w.write(f, img)
 
-# 255 x 255
-generateImage('Output-255', 'red.png',  RED)
-generateImage('Output-255', 'blue.png', BLUE)
 
-# 720 ("HD") - 1280 x 720
-generateImage('Output-720', 'red.png',  RED,  width=1280, height=720)
-generateImage('Output-720', 'blue.png', BLUE, width=1280, height=720)
+def generate(name, size):
+    dirName = os.path.join(OUTPUT_DIR, name)
+    if not os.path.exists(dirName):
+        os.makedirs(dirName)
 
-# 1080 ("Full HD") - 1920 x 1080
-generateImage('Output-1080', 'red.png',  RED,  width=1920, height=1080)
-generateImage('Output-1080', 'blue.png', BLUE, width=1920, height=1080)
+    redFilePath  = os.path.join(dirName, 'red')
+    blueFilePath = os.path.join(dirName, 'blue')
 
-# 2K - 2560 x 1440
-generateImage('Output-2K', 'red.png',  RED,  width=2560, height=1440)
-generateImage('Output-2K', 'blue.png', BLUE, width=2560, height=1440)
+    print('## Generating', name, 'images and video')
 
-# 4K - 3840 x 2160
-generateImage('Output-4K', 'red.png',  RED,  width=3840, height=2160)
-generateImage('Output-4K', 'blue.png', BLUE, width=3840, height=2160)
+    generateImage(redFilePath  + '.png', RED,  width=size[0], height=size[1])
+    generateImage(blueFilePath + '.png', BLUE, width=size[0], height=size[1])
+
+    subprocess.check_call(['ffmpeg', '-hide_banner', '-loglevel', 'warning', '-stats', '-y', '-loop', '1', '-i', redFilePath  + '.png', '-c:v', 'libx264', '-t', '60', redFilePath  + '.mp4'])
+    subprocess.check_call(['ffmpeg', '-hide_banner', '-loglevel', 'warning', '-stats', '-y', '-loop', '1', '-i', blueFilePath + '.png', '-c:v', 'libx264', '-t', '60', blueFilePath + '.mp4'])
+
+    print('')
+
+
+generate('255',  [ 255,  255])
+generate('720',  [1280,  720])
+generate('1080', [1920, 1080])
+generate('2K',   [2560, 1440])
+generate('4K',   [3840, 2160])
