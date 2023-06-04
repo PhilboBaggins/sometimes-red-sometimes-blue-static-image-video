@@ -42,8 +42,8 @@ def generate(name, size):
     print('')
 
 
-generate('255',  [ 255,  255])
-generate('720',  [1280,  720])
-generate('1080', [1920, 1080])
-generate('2K',   [2560, 1440])
-generate('4K',   [3840, 2160])
+generate('255x255', [ 255,  255])
+generate('720',     [1280,  720])
+generate('1080',    [1920, 1080])
+generate('2K',      [2560, 1440])
+generate('4K',      [3840, 2160])
