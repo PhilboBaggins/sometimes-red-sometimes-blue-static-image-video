@@ -9,7 +9,7 @@ OUTPUT_DIR = 'Output'
 RED = [255, 0, 0]
 BLUE = [0, 0, 255]
 
-def generateImage(filePath, colour, width = 255, height = 255):
+def generateImage(filePath, colour, width = 256, height = 256):
     def createImgRow():
         row = []
         for _ in range(width):
@@ -42,7 +42,7 @@ def generate(name, size):
     print('')
 
 
-generate('255x255', [ 255,  255])
+generate('256x256', [ 256,  256])
 generate('650x480', [ 650,  480])
 generate('720',     [1280,  720])
 generate('1080',    [1920, 1080])
