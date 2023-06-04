@@ -43,6 +43,7 @@ def generate(name, size):
 
 
 generate('255x255', [ 255,  255])
+generate('650x480', [ 650,  480])
 generate('720',     [1280,  720])
 generate('1080',    [1920, 1080])
 generate('2K',      [2560, 1440])
